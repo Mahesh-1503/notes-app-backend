@@ -12,7 +12,8 @@ const app = express();
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:3000", // Local development
-  "https://your-frontend.netlify.app", // Your Netlify frontend URL
+  "https://your-notes-app.netlify.app", // Your Netlify frontend URL
+  "https://notes-app-frontend.vercel.app", // Your Vercel frontend URL
   // Add any other domains you need to allow
 ];
 
