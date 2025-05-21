@@ -12,9 +12,7 @@ const app = express();
 // CORS Configuration
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? ['https://your-frontend-domain.vercel.app'] // Add your frontend domain here
-      : ['http://localhost:3000'],
+    origin: true, // Allow all origins in development
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
