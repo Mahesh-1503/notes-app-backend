@@ -4,15 +4,22 @@ const Note = require("../models/Note");
 exports.createNote = async (req, res) => {
   try {
     const { title, content, tags } = req.body;
+    
+    // Validate input
+    if (!title || !content) {
+      return res.status(400).json({ message: "Title and content are required" });
+    }
+
     const note = await Note.create({
       title,
       content,
-      tags,
+      tags: tags || [],
       userId: req.userId,
     });
     res.status(201).json(note);
   } catch (err) {
-    res.status(500).json({ message: "Error creating note" });
+    console.error("Error creating note:", err);
+    res.status(500).json({ message: "Error creating note", error: err.message });
   }
 };
 
@@ -22,7 +29,8 @@ exports.getNotes = async (req, res) => {
     const notes = await Note.find({ userId: req.userId }).sort({ createdAt: -1 });
     res.status(200).json(notes);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching notes" });
+    console.error("Error fetching notes:", err);
+    res.status(500).json({ message: "Error fetching notes", error: err.message });
   }
 };
 
@@ -40,7 +48,8 @@ exports.getNote = async (req, res) => {
 
     res.status(200).json(note);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching note" });
+    console.error("Error fetching note:", err);
+    res.status(500).json({ message: "Error fetching note", error: err.message });
   }
 };
 
@@ -48,9 +57,15 @@ exports.getNote = async (req, res) => {
 exports.updateNote = async (req, res) => {
   try {
     const { title, content, tags } = req.body;
+    
+    // Validate input
+    if (!title || !content) {
+      return res.status(400).json({ message: "Title and content are required" });
+    }
+
     const note = await Note.findOneAndUpdate(
       { _id: req.params.id, userId: req.userId },
-      { title, content, tags },
+      { title, content, tags: tags || [] },
       { new: true } // Return the updated note
     );
 
@@ -60,7 +75,8 @@ exports.updateNote = async (req, res) => {
 
     res.status(200).json(note);
   } catch (err) {
-    res.status(500).json({ message: "Error updating note" });
+    console.error("Error updating note:", err);
+    res.status(500).json({ message: "Error updating note", error: err.message });
   }
 };
 
@@ -78,6 +94,7 @@ exports.deleteNote = async (req, res) => {
 
     res.status(200).json({ message: "Note deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Error deleting note" });
+    console.error("Error deleting note:", err);
+    res.status(500).json({ message: "Error deleting note", error: err.message });
   }
 };
