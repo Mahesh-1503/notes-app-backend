@@ -2,9 +2,12 @@ const jwt = require("jsonwebtoken");
 
 const authMiddleware = async (req, res, next) => {
   try {
+    console.log('Auth Headers:', req.headers);
     const authHeader = req.header("Authorization");
+    console.log('Authorization header:', authHeader);
     
     if (!authHeader) {
+      console.log('No authorization header found');
       return res.status(401).json({ message: "No authorization header" });
     }
 
@@ -13,7 +16,10 @@ const authMiddleware = async (req, res, next) => {
       ? authHeader.slice(7) 
       : authHeader;
     
+    console.log('Extracted token:', token ? token.substring(0, 20) + '...' : 'undefined');
+    
     if (!token) {
+      console.log('No token found in authorization header');
       return res.status(401).json({ message: "No token, authorization denied" });
     }
 
@@ -23,8 +29,12 @@ const authMiddleware = async (req, res, next) => {
     }
 
     try {
+      console.log('Attempting to verify token with JWT_SECRET');
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Token decoded successfully:', decoded);
+      
       if (!decoded.userId) {
+        console.log('Token payload missing userId');
         throw new Error("Invalid token payload");
       }
       req.userId = decoded.userId;
