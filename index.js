@@ -22,6 +22,17 @@ app.use(
 // Middleware
 app.use(express.json()); // Parse JSON requests
 
+// Error logging middleware
+app.use((err, req, res, next) => {
+  console.error('Error details:', {
+    message: err.message,
+    stack: err.stack,
+    body: req.body,
+    headers: req.headers
+  });
+  next(err);
+});
+
 // Test Route
 app.get("/", (req, res) => {
   res.send("Notes App Backend is Running!");
