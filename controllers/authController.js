@@ -28,11 +28,18 @@ exports.register = async (req, res) => {
     await user.save();
 
     // Create token
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not defined in environment variables");
+      return res.status(500).json({ message: "Server configuration error" });
+    }
+
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
+
+    console.log("Token created successfully for user:", user._id);
 
     res.status(201).json({
       token,
@@ -43,7 +50,11 @@ exports.register = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Registration error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     res.status(500).json({ message: "Server Error" });
   }
 };
